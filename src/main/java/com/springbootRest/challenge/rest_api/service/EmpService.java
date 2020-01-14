@@ -4,9 +4,17 @@ package com.springbootRest.challenge.rest_api.service;
 import com.springbootRest.challenge.rest_api.entity.Employee;
 import com.springbootRest.challenge.rest_api.exceptions.EmpDoesNotExistException;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface EmpService {
+
+    /**
+     * Gets the user for Id.
+     *
+     * @return List of Employee
+     */
+    List<Employee> findAllEmp();
 
     /**
      * Gets the user for Id.

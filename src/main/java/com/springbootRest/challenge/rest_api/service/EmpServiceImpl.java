@@ -9,6 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,6 +24,17 @@ public class EmpServiceImpl implements EmpService {
     @PersistenceContext
     private EntityManager entityManager;
     private Logger logger = LoggerFactory.getLogger(EmpServiceImpl.class);
+
+    @Override
+    @Transactional
+    public List<Employee> findAllEmp() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Employee> cq = criteriaBuilder.createQuery(Employee.class);
+        Root<Employee> rootEntry = cq.from(Employee.class);
+        CriteriaQuery<Employee> all = cq.select(rootEntry);
+        TypedQuery<Employee> allQuery = entityManager.createQuery(all);
+        return allQuery.getResultList();
+    }
 
     /**
      * Gets the user for Id.

@@ -7,18 +7,20 @@ import com.springbootRest.challenge.rest_api.service.EmpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.springbootRest.challenge.rest_api.constants.ConfigConstant.REST_API_URI_EMPLOYEE;
 import static com.springbootRest.challenge.rest_api.constants.ConfigConstant.REST_API_URI_EMPLOYEE_ID;
-import static com.springbootRest.challenge.rest_api.constants.LoggerConstant.LOGGER_SERVICE_STATEMENT_1004;
-import static com.springbootRest.challenge.rest_api.constants.LoggerConstant.LOGGER_SERVICE_STATEMENT_1006;
-import static com.springbootRest.challenge.rest_api.constants.MessageConstants.RECORD_NOT_FOUND_ID;
-import static com.springbootRest.challenge.rest_api.constants.MessageConstants.SERVER_INTERNAL_ERROR;
+import static com.springbootRest.challenge.rest_api.constants.LoggerConstant.*;
+import static com.springbootRest.challenge.rest_api.constants.MessageConstants.*;
 import static org.springframework.http.ResponseEntity.status;
 
 @RestController()
@@ -29,6 +31,27 @@ public class EmployeeController {
     @Autowired
     private MessageHelperService messageHelperService;
     private Logger logger = LoggerFactory.getLogger(Employee.class);
+
+    @GetMapping()
+    public ResponseEntity findAllEmp() {
+        logger.debug(LOGGER_SERVICE_STATEMENT_1009);
+        try {
+            List<Employee> allEmp = empService.findAllEmp();
+            if (allEmp.isEmpty()) {
+                return status(HttpStatus.OK).body(messageHelperService.getMessage(NO_EMPLOYEES));
+            }
+            List<EntityModel> userWithLinkList = new ArrayList<>();
+            allEmp.forEach(employee -> {
+                EntityModel<Employee> entityModel = new EntityModel<>(employee);
+                WebMvcLinkBuilder webMvcLinkBuilder = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).findEmpById(employee.getId()));
+                entityModel.add(webMvcLinkBuilder.withRel("UserLink"));
+                userWithLinkList.add(entityModel);
+            });
+            return status(HttpStatus.OK).body(userWithLinkList);
+        } catch (Exception e) {
+            return status(HttpStatus.INTERNAL_SERVER_ERROR).body(messageHelperService.getMessage(SERVER_INTERNAL_ERROR));
+        }
+    }
 
     /**
      * get the employee.

@@ -9,6 +9,8 @@ public class LoggerConstant {
     public static final String LOGGER_SERVICE_STATEMENT_1006 = "EmployeeController|saveEmp|invoke|employee:{}";
     public static final String LOGGER_SERVICE_STATEMENT_1007 = "EmployeeController|find|invoke";
     public static final String LOGGER_SERVICE_STATEMENT_1008 = "updateEmployee|invoke|employee : {}";
+    public static final String LOGGER_SERVICE_STATEMENT_1009 = "EmployeeController|findAllEmp";
+
 
 
 }
