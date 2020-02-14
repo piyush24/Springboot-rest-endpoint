@@ -30,8 +30,14 @@ public class EmployeeController {
     private EmpService empService;
     @Autowired
     private MessageHelperService messageHelperService;
-    private Logger logger = LoggerFactory.getLogger(Employee.class);
+    private Logger logger = LoggerFactory.getLogger(EmployeeController.class);
+    private String USER_LINK_VALUE = "UserLink";
 
+    /**
+     * List of all employees with access Url
+     *
+     * @return ResponseEntity with employees
+     */
     @GetMapping()
     public ResponseEntity findAllEmp() {
         logger.debug(LOGGER_SERVICE_STATEMENT_1009);
@@ -44,7 +50,7 @@ public class EmployeeController {
             allEmp.forEach(employee -> {
                 EntityModel<Employee> entityModel = new EntityModel<>(employee);
                 WebMvcLinkBuilder webMvcLinkBuilder = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).findEmpById(employee.getId()));
-                entityModel.add(webMvcLinkBuilder.withRel("UserLink"));
+                entityModel.add(webMvcLinkBuilder.withRel(USER_LINK_VALUE));
                 userWithLinkList.add(entityModel);
             });
             return status(HttpStatus.OK).body(userWithLinkList);
@@ -72,6 +78,11 @@ public class EmployeeController {
         }
     }
 
+    /**
+     * Save the employee
+     *
+     * @return ResponseEntity with saved employee
+     */
     @PostMapping()
     public ResponseEntity saveEmployee(@RequestBody Employee employee) {
         logger.debug(LOGGER_SERVICE_STATEMENT_1006, employee.toString());
@@ -83,6 +94,11 @@ public class EmployeeController {
         }
     }
 
+    /**
+     * update the employee
+     *
+     * @return ResponseEntity with updated employee
+     */
     @PutMapping()
     public ResponseEntity updateEmployee(@RequestBody Employee employee) {
         logger.debug(LOGGER_SERVICE_STATEMENT_1006, employee.toString());

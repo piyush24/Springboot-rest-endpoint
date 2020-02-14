@@ -28,12 +28,15 @@ public class EmpServiceImpl implements EmpService {
     @Override
     @Transactional
     public List<Employee> findAllEmp() {
+        logger.debug(LOGGER_SERVICE_STATEMENT_1010);
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Employee> cq = criteriaBuilder.createQuery(Employee.class);
         Root<Employee> rootEntry = cq.from(Employee.class);
         CriteriaQuery<Employee> all = cq.select(rootEntry);
         TypedQuery<Employee> allQuery = entityManager.createQuery(all);
-        return allQuery.getResultList();
+        List<Employee> allEmployees = allQuery.getResultList();
+        logger.debug(LOGGER_SERVICE_STATEMENT_1011, allEmployees);
+        return allEmployees;
     }
 
     /**
